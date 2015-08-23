@@ -64,6 +64,7 @@ def main():
             queue (in seconds, can be floating-point for more precision).")
     parser.add_argument('--path', default='.', help='Specify the import path.')
     parser.add_argument('--pid', help='A filename to use for the PID file.', metavar='FILE')
+    parser.add_argument('--cleanup', help='Remove any existing scheduler metadata when starting.', action='store_true', default=False)
     
     args = parser.parse_args( remaining_argv )
     
@@ -88,6 +89,8 @@ def main():
     setup_loghandlers(level)
 
     scheduler = Scheduler(connection=connection, interval=args.interval)
+    if args.cleanup:
+        scheduler.cleanup()
     scheduler.run()
 
 if __name__ == '__main__':

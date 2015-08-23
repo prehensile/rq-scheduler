@@ -28,6 +28,14 @@ class Scheduler(object):
         self._interval = interval
         self.log = logger
 
+    def cleanup(self):
+        # remove existing scheduler key.
+        key = self.scheduler_key
+        if self.connection.exists(key):
+            with self.connection._pipeline() as p:
+                p.delete(key)
+                p.execute()
+
     def register_birth(self):
         if self.connection.exists(self.scheduler_key) and \
                 not self.connection.hexists(self.scheduler_key, 'death'):
